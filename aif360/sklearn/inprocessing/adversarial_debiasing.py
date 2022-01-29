@@ -122,6 +122,7 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
 #             n_groups = 1
 
         n_samples, n_features = X.shape
+        print("n_samples, n_features", n_samples, n_features)
 
         with tf.variable_scope(self.scope_name):
             # Setup placeholders
@@ -241,6 +242,9 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
                 for i in range(n_samples // self.batch_size):
                     batch_ids = shuffled_ids[self.batch_size * i:
                                              self.batch_size * (i+1)]
+                    print("batch ids ", batch_ids)
+                    print("y", y)
+                    print("y shape", y.shape)
                     batch_features = X.iloc[batch_ids]
                     batch_labels = y[batch_ids][:, np.newaxis]
                     batch_prot_attr = groups[batch_ids][:, np.newaxis]
