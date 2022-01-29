@@ -111,9 +111,11 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
 #         y = le.fit_transform(y)
 #         self.classes_ = le.classes_
 #         # BUG: LabelEncoder converts to ndarray which removes tuple formatting
-#         groups = groups.map(str)
-#         groups = le.fit_transform(groups)
+        groups = groups.map(str)
+        groups = le.fit_transform(groups)
 #         self.groups_ = le.classes_
+        print(type(groups))
+        print(groups)
 
         n_classes = 5
         n_groups = 2
