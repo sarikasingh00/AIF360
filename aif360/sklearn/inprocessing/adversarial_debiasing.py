@@ -122,7 +122,7 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
         print(type(z))
         print(z)
         
-        groups = z
+        groups = np.array(z)
 
         n_classes = 5
         n_groups = 2
