@@ -249,9 +249,9 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
                     print("y shape", y.shape)
                     batch_features = X.iloc[batch_ids]
 #                     batch_labels = y[batch_ids][:, np.newaxis]
-                    batch_labels = y[batch_ids][:]
+                    batch_labels = y[batch_ids]
 #                     batch_prot_attr = groups[batch_ids][:, np.newaxis]
-                    batch_prot_attr = groups[batch_ids][:]
+                    batch_prot_attr = groups[batch_ids]
                     batch_feed_dict = {self.input_ph: batch_features,
                                        self.true_labels_ph: batch_labels,
                                        self.prot_attr_ph: batch_prot_attr,
