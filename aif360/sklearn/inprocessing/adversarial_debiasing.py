@@ -253,15 +253,15 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
                 for i in range(n_samples // self.batch_size):
                     batch_ids = shuffled_ids[self.batch_size * i:
                                              self.batch_size * (i+1)]
-                    print("batch ids ", batch_ids)
+#                     print("batch ids ", batch_ids)
 #                     print("y", y)
-                    print("y shape", y.shape)
+#                     print("y shape", y.shape)
                     batch_features = X.iloc[batch_ids]
 #                     batch_labels = y[batch_ids][:, np.newaxis]
                     batch_labels = y[batch_ids]
 #                     batch_prot_attr = groups[batch_ids][:, np.newaxis]
                     batch_prot_attr = groups[batch_ids]
-                    print("batch_prot_attr", batch_prot_attr)
+#                     print("batch_prot_attr", batch_prot_attr)
                     batch_feed_dict = {self.input_ph: batch_features,
                                        self.true_labels_ph: batch_labels,
                                        self.prot_attr_ph: batch_prot_attr,
