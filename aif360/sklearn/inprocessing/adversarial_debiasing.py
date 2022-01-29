@@ -104,7 +104,9 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
         tf.reset_default_graph()
         self.sess_ = tf.Session()
 
-#         groups, self.prot_attr_ = check_groups(X, self.prot_attr)
+        groups, self.prot_attr_ = check_groups(X, self.prot_attr)
+        print(type(groups))
+        print(groups)
 #         le = LabelEncoder()
 #         y = le.fit_transform(y)
 #         self.classes_ = le.classes_
@@ -243,7 +245,7 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
                     batch_ids = shuffled_ids[self.batch_size * i:
                                              self.batch_size * (i+1)]
                     print("batch ids ", batch_ids)
-                    print("y", y)
+#                     print("y", y)
                     print("y shape", y.shape)
                     batch_features = X.iloc[batch_ids]
                     batch_labels = y[batch_ids][:, np.newaxis]
