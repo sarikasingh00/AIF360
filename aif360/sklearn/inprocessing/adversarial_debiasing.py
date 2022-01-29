@@ -113,8 +113,8 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
 #         groups = le.fit_transform(groups)
 #         self.groups_ = le.classes_
 
-#         n_classes = len(self.classes_)
-#         n_groups = len(self.groups_)
+        n_classes = 5
+        n_groups = 2
 #         # use sigmoid for binary case
 #         if n_classes == 2:
 #             n_classes = 1
