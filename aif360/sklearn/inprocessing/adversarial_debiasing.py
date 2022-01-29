@@ -96,7 +96,7 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
                     "execution mode. To fix, add `tf.disable_eager_execution()`"
                     " to the top of the calling script.")
 
-        X, y, _ = check_inputs(X, y)
+#         X, y, _ = check_inputs(X, y)
         rng = check_random_state(self.random_state)
         ii32 = np.iinfo(np.int32)
         s1, s2, s3, s4 = rng.randint(ii32.min, ii32.max, size=4)
