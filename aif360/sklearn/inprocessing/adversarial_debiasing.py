@@ -116,7 +116,7 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
 #         self.groups_ = le.classes_
 
         z = []
-        for i,e,g in groups.ravel():
+        for e,g in groups.ravel():
             z += [[e,g]]
 
         print(type(z))
