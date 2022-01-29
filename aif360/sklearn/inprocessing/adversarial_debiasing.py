@@ -252,6 +252,7 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
                     batch_labels = y[batch_ids]
 #                     batch_prot_attr = groups[batch_ids][:, np.newaxis]
                     batch_prot_attr = groups[batch_ids]
+                    print("batch_prot_attr", batch_prot_attr)
                     batch_feed_dict = {self.input_ph: batch_features,
                                        self.true_labels_ph: batch_labels,
                                        self.prot_attr_ph: batch_prot_attr,
