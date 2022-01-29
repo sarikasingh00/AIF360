@@ -105,8 +105,8 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
         self.sess_ = tf.Session()
 
         groups, self.prot_attr_ = check_groups(X, self.prot_attr)
-        print(type(groups))
-        print(groups)
+#         print(type(groups))
+#         print(groups)
 #         le = LabelEncoder()
 #         y = le.fit_transform(y)
 #         self.classes_ = le.classes_
@@ -119,8 +119,8 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
         for e,g in groups.ravel():
             z += [[e,g]]
 
-        print(type(z))
-        print(z)
+#         print(type(z))
+#         print(z)
         
         groups = np.array(z)
 
@@ -133,7 +133,7 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
 #             n_groups = 1
 
         n_samples, n_features = X.shape
-        print("n_samples, n_features", n_samples, n_features)
+#         print("n_samples, n_features", n_samples, n_features)
 
         with tf.variable_scope(self.scope_name):
             # Setup placeholders
