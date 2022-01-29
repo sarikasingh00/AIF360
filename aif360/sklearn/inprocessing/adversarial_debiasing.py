@@ -107,7 +107,7 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
         groups, self.prot_attr_ = check_groups(X, self.prot_attr)
         print(type(groups))
         print(groups)
-#         le = LabelEncoder()
+        le = LabelEncoder()
 #         y = le.fit_transform(y)
 #         self.classes_ = le.classes_
 #         # BUG: LabelEncoder converts to ndarray which removes tuple formatting
