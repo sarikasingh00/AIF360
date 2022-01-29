@@ -104,30 +104,30 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
         tf.reset_default_graph()
         self.sess_ = tf.Session()
 
-        groups, self.prot_attr_ = check_groups(X, self.prot_attr)
-        le = LabelEncoder()
-        y = le.fit_transform(y)
-        self.classes_ = le.classes_
-        # BUG: LabelEncoder converts to ndarray which removes tuple formatting
-        groups = groups.map(str)
-        groups = le.fit_transform(groups)
-        self.groups_ = le.classes_
+#         groups, self.prot_attr_ = check_groups(X, self.prot_attr)
+#         le = LabelEncoder()
+#         y = le.fit_transform(y)
+#         self.classes_ = le.classes_
+#         # BUG: LabelEncoder converts to ndarray which removes tuple formatting
+#         groups = groups.map(str)
+#         groups = le.fit_transform(groups)
+#         self.groups_ = le.classes_
 
-        n_classes = len(self.classes_)
-        n_groups = len(self.groups_)
-        # use sigmoid for binary case
-        if n_classes == 2:
-            n_classes = 1
-        if n_groups == 2:
-            n_groups = 1
+#         n_classes = len(self.classes_)
+#         n_groups = len(self.groups_)
+#         # use sigmoid for binary case
+#         if n_classes == 2:
+#             n_classes = 1
+#         if n_groups == 2:
+#             n_groups = 1
 
         n_samples, n_features = X.shape
 
         with tf.variable_scope(self.scope_name):
             # Setup placeholders
             self.input_ph = tf.placeholder(tf.float32, shape=[None, n_features])
-            self.prot_attr_ph = tf.placeholder(tf.float32, shape=[None, 1])
-            self.true_labels_ph = tf.placeholder(tf.float32, shape=[None, 1])
+            self.prot_attr_ph = tf.placeholder(tf.float32, shape=[None, 2])
+            self.true_labels_ph = tf.placeholder(tf.float32, shape=[None, 5])
             self.keep_prob = tf.placeholder(tf.float32)
 
             # Create classifier
@@ -142,24 +142,24 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
                 h1 = tf.nn.dropout(h1, rate=1-self.keep_prob, seed=s2)
 
                 W2 = tf.get_variable(
-                        'W2', [self.classifier_num_hidden_units, n_classes],
+                        'W2', [self.classifier_num_hidden_units, 5],
                         initializer=tf.initializers.glorot_uniform(seed=s3))
                 b2 = tf.Variable(tf.zeros(shape=[n_classes]), name='b2')
 
                 self.classifier_logits_ = tf.matmul(h1, W2) + b2
 
             # Obtain classifier loss
-            if self.classifier_logits_.shape[1] == 1:
-                clf_loss = tf.reduce_mean(
-                        tf.nn.sigmoid_cross_entropy_with_logits(
-                                labels=self.true_labels_ph,
-                                logits=self.classifier_logits_))
-            else:
-                clf_loss = tf.reduce_mean(
-                        tf.nn.sparse_softmax_cross_entropy_with_logits(
-                                labels=tf.squeeze(tf.cast(self.true_labels_ph,
-                                                          tf.int32)),
-                                logits=self.classifier_logits_))
+#             if self.classifier_logits_.shape[1] == 1:
+            clf_loss = tf.reduce_mean(
+                    tf.nn.sigmoid_cross_entropy_with_logits(
+                            labels=self.true_labels_ph,
+                            logits=self.classifier_logits_))
+#             else:
+#                 clf_loss = tf.reduce_mean(
+#                         tf.nn.sparse_softmax_cross_entropy_with_logits(
+#                                 labels=tf.squeeze(tf.cast(self.true_labels_ph,
+#                                                           tf.int32)),
+#                                 logits=self.classifier_logits_))
 
             if self.debias:
                 # Create adversary
@@ -167,7 +167,7 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
                     c = tf.get_variable('c', initializer=tf.constant(1.0))
                     s = tf.sigmoid((1 + tf.abs(c)) * self.classifier_logits_)
 
-                    W2 = tf.get_variable('W2', [3, n_groups],
+                    W2 = tf.get_variable('W2', [3, 2],
                             initializer=tf.initializers.glorot_uniform(seed=s4))
                     b2 = tf.Variable(tf.zeros(shape=[n_groups]), name='b2')
 
@@ -177,17 +177,17 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
                             W2) + b2
 
                 # Obtain adversary loss
-                if self.adversary_logits_.shape[1] == 1:
-                    adv_loss = tf.reduce_mean(
-                            tf.nn.sigmoid_cross_entropy_with_logits(
-                                    labels=self.prot_attr_ph,
-                                    logits=self.adversary_logits_))
-                else:
-                    adv_loss = tf.reduce_mean(
-                            tf.nn.sparse_softmax_cross_entropy_with_logits(
-                                    labels=tf.squeeze(tf.cast(self.prot_attr_ph,
-                                                              tf.int32)),
-                                    logits=self.adversary_logits_))
+#                 if self.adversary_logits_.shape[1] == 1:
+                adv_loss = tf.reduce_mean(
+                        tf.nn.sigmoid_cross_entropy_with_logits(
+                                labels=self.prot_attr_ph,
+                                logits=self.adversary_logits_))
+#                 else:
+#                     adv_loss = tf.reduce_mean(
+#                             tf.nn.sparse_softmax_cross_entropy_with_logits(
+#                                     labels=tf.squeeze(tf.cast(self.prot_attr_ph,
+#                                                               tf.int32)),
+#                                     logits=self.adversary_logits_))
 
             global_step = tf.Variable(0., trainable=False)
             init_learning_rate = 0.001
@@ -283,9 +283,10 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
         check_is_fitted(self, ['classes_', 'input_ph', 'keep_prob',
                                'classifier_logits_'])
         n_samples = X.shape[0]
-        n_classes = len(self.classes_)
-        if n_classes == 2:
-            n_classes = 1
+#         n_classes = len(self.classes_)
+#         if n_classes == 2:
+#             n_classes = 1
+        n_classes = 5
 
         samples_covered = 0
         scores = np.empty((n_samples, n_classes))
