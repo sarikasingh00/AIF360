@@ -167,7 +167,7 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
                     c = tf.get_variable('c', initializer=tf.constant(1.0))
                     s = tf.sigmoid((1 + tf.abs(c)) * self.classifier_logits_)
 
-                    W2 = tf.get_variable('W2', [3, 2],
+                    W2 = tf.get_variable('W2', [15, 2],
                             initializer=tf.initializers.glorot_uniform(seed=s4))
                     b2 = tf.Variable(tf.zeros(shape=[n_groups]), name='b2')
 
