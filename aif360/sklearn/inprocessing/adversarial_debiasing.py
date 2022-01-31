@@ -230,9 +230,11 @@ class AdversarialDebiasing(BaseEstimator, ClassifierMixin):
             for (grad, var) in clf_opt.compute_gradients(clf_loss,
                                                          var_list=clf_vars):
                 if self.debias:
+                    print("clf var", var)
+#                     print("adv", )
                     unit_adv_grad = normalize(adv_grads[var])
-                    print(unit_adv_grad)
-                    print(grad)
+                    print("unit_adv_grad", unit_adv_grad)
+                    print("grad", grad)
                     # proj_{adv_grad} clf_grad:
                     grad -= tf.reduce_sum(grad * unit_adv_grad) * unit_adv_grad
                     if self.adversary_loss_weight is not None:
